@@ -59,6 +59,12 @@ class CardSet
     /* 鐵支 */
     public function isFourOfAKind()
     {
+        $numbers = $this->getAllNumber();
+
+        $numbers = $this->getGroupByValueResult($numbers);
+
+        return (($numbers[4] ?? 0) == 1);
+
     }
 
     /* 葫蘆 */

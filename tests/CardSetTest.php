@@ -19,9 +19,7 @@ class CardSetTest extends TestCase
 //        $cards = 'CJ,CQ,CK,CA,C2';
 //        $cards = 'C9,C10,CJ,CQ,CA';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isStraight());
     }
@@ -30,9 +28,7 @@ class CardSetTest extends TestCase
     {
         $cards = 'H9,HK,HQ,HJ,H10';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isFlush());
 
@@ -42,9 +38,7 @@ class CardSetTest extends TestCase
     {
         $cards = 'H1,A1,S2,S2,H2';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isFullHouse());
     }
@@ -53,9 +47,7 @@ class CardSetTest extends TestCase
     {
         $cards = 'H1,C5,S2,S2,H2';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isThreeOfKind());
 
@@ -65,9 +57,7 @@ class CardSetTest extends TestCase
     {
         $cards = 'C9,C10,CJ,CQ,CK';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isStraightFlush());
     }
@@ -76,15 +66,28 @@ class CardSetTest extends TestCase
     {
         $cards = 'C9,H9,C3,H3,S4';
 
-        $cardParser = new CardParser($cards);
-
-        $cardSet = new CardSet($cardParser->getResult());
+        $cardSet = $this->getCardSet($cards);
 
         $this->assertTrue($cardSet->isTwoPair());
     }
 
     public function testIsFourOfAKind()
     {
+        $cards = 'C1,H1,S1,D1,S4';
 
+        $cardSet = $this->getCardSet($cards);
+
+        $this->assertTrue($cardSet->isFourOfAKind());
+    }
+
+    /**
+     * @param string $cards
+     * @return CardSet
+     */
+    protected function getCardSet(string $cards): CardSet
+    {
+        $cardParser = new CardParser($cards);
+
+        return new CardSet($cardParser->getResult());
     }
 }
