@@ -74,7 +74,13 @@ class CardSetTest extends TestCase
 
     public function testIsTwoPair()
     {
+        $cards = 'C9,H9,C3,H3,S4';
 
+        $cardParser = new CardParser($cards);
+
+        $cardSet = new CardSet($cardParser->getResult());
+
+        $this->assertTrue($cardSet->isTwoPair());
     }
 
     public function testIsFourOfAKind()

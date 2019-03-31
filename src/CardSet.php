@@ -97,6 +97,11 @@ class CardSet
     /* 兩對 */
     public function isTwoPair()
     {
+        $numbers = $this->getAllNumber();
+
+        $numbers = $this->getGroupByValueResult($numbers);
+
+        return (($numbers[2] ?? 0) == 2);
     }
 
     /* 一對 */
