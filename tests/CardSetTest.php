@@ -80,6 +80,15 @@ class CardSetTest extends TestCase
         $this->assertTrue($cardSet->isFourOfAKind());
     }
 
+    public function testIsOnePair()
+    {
+        $cards = 'C9,H10,C3,H3,S6';
+
+        $cardSet = $this->getCardSet($cards);
+
+        $this->assertTrue($cardSet->isOnePair());
+    }
+
     /**
      * @param string $cards
      * @return CardSet

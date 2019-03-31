@@ -113,6 +113,11 @@ class CardSet
     /* 一對 */
     public function isOnePair()
     {
+        $numbers = $this->getAllNumber();
+
+        $numbers = $this->getGroupByValueResult($numbers);
+
+        return (($numbers[2] ?? 0) == 1);
     }
 
     /**
