@@ -19,9 +19,7 @@ class CardSet
     /* 順子 */
     public function isStraight()
     {
-        $numbers = array_map(function (card $card) {
-            return $card->getNumber();
-        }, $this->cards);
+        $numbers = $this->getAllNumber();
 
         if (count(array_unique($numbers)) != 5) {
             return false;
@@ -57,6 +55,9 @@ class CardSet
     /* 同花 */
     public function isFlush()
     {
+        $colors = $this->getAllColor();
+
+        return count(array_unique($colors)) == 1;
     }
 
     /* 三條 */
@@ -72,6 +73,26 @@ class CardSet
     /* 一對 */
     public function isOnePair()
     {
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAllNumber(): array
+    {
+        return array_map(function (card $card) {
+            return $card->getNumber();
+        }, $this->cards);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAllColor(): array
+    {
+        return array_map(function (card $card) {
+            return $card->getColor();
+        }, $this->cards);
     }
 
 }

@@ -25,6 +25,13 @@ class CardSetTest extends TestCase
 
     public function testIsFlush()
     {
+        $cards = 'H9,HK,HQ,HJ,H10';
+
+        $cardParser = new CardParser($cards);
+
+        $cardSet = new CardSet($cardParser->getResult());
+
+        $this->assertTrue($cardSet->isFlush());
 
     }
 
