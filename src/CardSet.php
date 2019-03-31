@@ -73,6 +73,11 @@ class CardSet
     /* 三條 */
     public function isThreeOfKind()
     {
+        $numbers = $this->getAllNumber();
+
+        $numbers = $this->getGroupByValueResult($numbers);
+
+        return (($numbers[3] ?? 0) == 1) && (($numbers[2] ?? 0) != 1);
     }
 
     /* 兩對 */

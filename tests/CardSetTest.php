@@ -48,6 +48,13 @@ class CardSetTest extends TestCase
 
     public function testIsThreeOfKind()
     {
+        $cards = 'H1,C5,S2,S2,H2';
+
+        $cardParser = new CardParser($cards);
+
+        $cardSet = new CardSet($cardParser->getResult());
+
+        $this->assertTrue($cardSet->isThreeOfKind());
 
     }
 
