@@ -14,7 +14,10 @@ class CardSetTest extends TestCase
 
     public function testIsStraight()
     {
-        $cards = 'H9,HK,HQ,HJ,S10';
+//        $cards = 'CA,C2,H2,H5,C5';
+        $cards = 'C10,CJ,CQ,CK,CA';
+//        $cards = 'CJ,CQ,CK,CA,C2';
+//        $cards = 'C9,C10,CJ,CQ,CA';
 
         $cardParser = new CardParser($cards);
 
@@ -60,7 +63,13 @@ class CardSetTest extends TestCase
 
     public function testIsStraightFlush()
     {
+        $cards = 'C9,C10,CJ,CQ,CK';
 
+        $cardParser = new CardParser($cards);
+
+        $cardSet = new CardSet($cardParser->getResult());
+
+        $this->assertTrue($cardSet->isStraightFlush());
     }
 
     public function testIsTwoPair()

@@ -25,21 +25,35 @@ class CardSet
             return false;
         }
 
-        $diff = 4;
-
-        /* 因為 A 用 14 取代 */
-        if (max($numbers) == 14) {
-            sort($numbers);
-            array_pop($numbers);
-            $diff = 3;
+        if (max($numbers) != 14) {
+            return max($numbers) - min($numbers) == 4;
         }
 
-        return max($numbers) - min($numbers) == $diff;
+        /* 因為 A 用 14 取代 */
+        sort($numbers);
+        array_pop($numbers);
+
+        if (max($numbers) + 1 != 14 && min($numbers) - 1 != 14) {
+            return false;
+        }
+
+        /*
+         * J Q K A 2 : 扣除掉 A 後，剩下加總為 38
+         * 10 J Q K A : 扣除掉 A 後，剩下加總為 46
+         * A 2 3 4 5 : 扣除掉 A 後，剩下加總為 14
+         *
+         * */
+        if (in_array(array_sum($numbers), [38, 46, 14])) {
+            return true;
+        }
+
+        return false;
     }
 
     /* 同花順 */
     public function isStraightFlush()
     {
+        return $this->isFlush() && $this->isStraight();
     }
 
     /* 鐵支 */
