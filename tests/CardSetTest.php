@@ -37,7 +37,13 @@ class CardSetTest extends TestCase
 
     public function testIsFullHouse()
     {
+        $cards = 'H1,A1,S2,S2,H2';
 
+        $cardParser = new CardParser($cards);
+
+        $cardSet = new CardSet($cardParser->getResult());
+
+        $this->assertTrue($cardSet->isFullHouse());
     }
 
     public function testIsThreeOfKind()

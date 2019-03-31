@@ -50,6 +50,16 @@ class CardSet
     /* 葫蘆 */
     public function isFullHouse()
     {
+        $numbers = $this->getAllNumber();
+
+        $numbers = $this->getGroupByValueResult($numbers);
+
+        return (($numbers[2] ?? 0) == 1) && (($numbers[3] ?? 0) == 1);
+    }
+
+    public function getGroupByValueResult($array)
+    {
+        return array_count_values(array_count_values($array));
     }
 
     /* 同花 */
