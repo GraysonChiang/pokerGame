@@ -16,12 +16,18 @@ class Card
     private $number;
 
     /**
+     * @var string
+     */
+    private $origin;
+
+    /**
      * Card constructor.
      * @param string $string
      */
     public function __construct(string $string)
     {
         $string = strtoupper($string);
+        $this->origin = $string;
         $this->color = $this->parserColor($string);
         $this->number = $this->parserNumber($string);
     }
@@ -43,10 +49,10 @@ class Card
     private function parserColor(string $string)
     {
         $colors = [
-            'S' => '1',
-            'H' => '2',
-            'D' => '3',
-            'C' => '4',
+            'S' => '4',
+            'H' => '3',
+            'D' => '2',
+            'C' => '1',
         ];
 
         return $colors[$string[0]] ?? '';
@@ -68,4 +74,11 @@ class Card
         return $this->number;
     }
 
+    /**
+     * @return string
+     */
+    public function getOrigin(): string
+    {
+        return $this->origin;
+    }
 }

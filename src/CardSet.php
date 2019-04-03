@@ -4,16 +4,20 @@ namespace App;
 
 class CardSet
 {
-    private $keyCard;
 
-    /**
-     * @var array
-     */
+    /* @var array */
     private $cards;
 
+    private $maximumCard;
+
+    /**
+     * CardSet constructor.
+     * @param Card[] $cards
+     */
     public function __construct(array $cards)
     {
-        $this->cards = $cards;
+        $this->cards = $this->sortCards($cards);
+        $this->maximumCard = $this->extractMaximumCard($cards);
     }
 
     /* 順子 */
@@ -77,7 +81,7 @@ class CardSet
         return (($numbers[2] ?? 0) == 1) && (($numbers[3] ?? 0) == 1);
     }
 
-    public function getGroupByValueResult($array)
+    private function getGroupByValueResult($array)
     {
         return array_count_values(array_count_values($array));
     }
@@ -123,7 +127,7 @@ class CardSet
     /**
      * @return array
      */
-    protected function getAllNumber(): array
+    public function getAllNumber(): array
     {
         return array_map(function (card $card) {
             return $card->getNumber();
@@ -133,11 +137,117 @@ class CardSet
     /**
      * @return array
      */
-    protected function getAllColor(): array
+    public function getAllColor(): array
     {
         return array_map(function (card $card) {
             return $card->getColor();
         }, $this->cards);
     }
 
+    /**
+     * @return Card[]
+     */
+    public function getCards(): array
+    {
+        return $this->cards;
+    }
+
+    public function getResult(): string
+    {
+        if ($this->isFlush() && $this->isStraight()) {
+            return 'straight_flush';
+        }
+
+        if ($this->isFourOfAKind()) {
+            return 'four_of_a_kind';
+        }
+
+        if ($this->isFullHouse()) {
+            return 'full_house';
+        }
+
+        if ($this->isFlush()) {
+            return "flush";
+        }
+
+        if ($this->isStraight()) {
+            return 'straight';
+        }
+
+        if ($this->isThreeOfKind()) {
+            return 'three_of_Kind';
+        }
+
+        if ($this->isTwoPair()) {
+            return 'two_pair';
+        }
+
+        if ($this->isOnePair()) {
+            return 'one_pair';
+        }
+
+        return 'high_card';
+    }
+
+    /**
+     * ================================
+     * 提取最大的卡牌
+     * ================================
+     *
+     * @param Card[] $cards
+     * @return mixed
+     */
+    public function extractMaximumCard(array $cards)
+    {
+        $num = $type = 0;
+        $string = '';
+
+        foreach ($cards as $card) {
+            $cardNum = $card->getNumber() == 2 ? '15' : $card->getNumber();
+
+            if ($num > $cardNum) {
+                continue;
+            }
+            if ($type > $card->getColor()) {
+                continue;
+            }
+            $num = $cardNum;
+            $type = $card->getColor();
+            $string = $card->getOrigin();
+        }
+
+        return $string;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaximumCard()
+    {
+        return $this->maximumCard;
+    }
+
+    /**
+     * ================================
+     * 將牌組排序，由大到小
+     * ================================
+     *
+     * @param Card[] $cards
+     * @return array
+     */
+    public function sortCards(array $cards)
+    {
+        usort($cards, function (Card $card, Card $card2) {
+            $carNum = $card->getNumber() == 2 ? 15 : $card->getNumber();
+            $car2Num = $card2->getNumber() == 2 ? 15 : $card2->getNumber();
+
+            if ($carNum == $car2Num) {
+                return $card->getColor() < $card2->getColor() ? 1 : -1;
+            }
+
+            return $carNum < $car2Num ? 1 : -1;
+        });
+
+        return $cards;
+    }
 }

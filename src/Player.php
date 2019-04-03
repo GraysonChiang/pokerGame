@@ -25,5 +25,13 @@ class Player
         return $this->cardsSet;
     }
 
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
 
 }
