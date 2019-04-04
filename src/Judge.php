@@ -76,8 +76,8 @@ class Judge
      */
     public function compareCardSet(array $cardSet, array $cardSet2)
     {
-        foreach ([0, 1, 2, 3, 4] as $k) {
-            $cardNum = $cardSet[$k]->getNumber() ;
+        foreach (range(0, count($cardSet) - 1) as $k) {
+            $cardNum = $cardSet[$k]->getNumber();
             $card2Num = $cardSet2[$k]->getNumber();
 
             if ($cardNum > $card2Num) {
@@ -104,19 +104,71 @@ class Judge
         return $this->compareCardSet($cardSet, $cardSet2);
     }
 
+    /**
+     * @param Card[] $cardSet
+     * @return array
+     */
+    public function getCardSummary(array $cardSet): array
+    {
+        return array_count_values(array_map(function (Card $card) {
+            return $card->getNumber();
+        }, $cardSet));
+    }
+
     /* 比較鐵支 */
     public function compareFourOfAKind(array $cardSet, array $cardSet2)
     {
-        $aa = array_map(function (Card $card) {
-            return $card->getNumber();
-        }, $cardSet);
+        $cardSetGroupBy = array_flip($this->getCardSummary($cardSet));
 
-        $bb = array_map(function (Card $card) {
-            return $card->getNumber();
-        }, $cardSet2);
+        $cardSet2GroupBy = array_flip($this->getCardSummary($cardSet2));
 
-        return '';
+        $winnerSet = [];
+
+        if ($cardSetGroupBy[4] == $cardSet2GroupBy[4]) {
+            array_push($winnerSet, $cardSetGroupBy[4] > $cardSetGroupBy[1] ? end($cardSet) : reset($cardSet));
+            array_push($winnerSet, $cardSet2GroupBy[4] > $cardSet2GroupBy[1] ? end($cardSet2) : reset($cardSet2));
+            return $winnerSet[0] != $winnerSet[1] ? $this->extractMaximumCard($winnerSet) : '';
+        }
+
+        $winnerSet = $cardSetGroupBy[4] > $cardSet2GroupBy[4] ? $cardSet : $cardSet2;
+
+        $cardSetMaxNumber = $cardSetGroupBy[4] > $cardSet2GroupBy[4] ? $cardSetGroupBy[4] : $cardSet2GroupBy[4];
+
+        return $this->extractMaximumCard(array_filter($winnerSet, function (Card $card) use ($cardSetMaxNumber) {
+            return $card->getNumber() == $cardSetMaxNumber;
+        }));
     }
+
+    /**
+     * ================================
+     * 提取最大的卡牌
+     * ================================
+     *
+     * @param Card[] $cards
+     * @return mixed
+     */
+    public function extractMaximumCard(array $cards)
+    {
+        $num = $type = 0;
+        $string = '';
+
+        foreach ($cards as $card) {
+            $cardNum = $card->getNumber();
+
+            if ($num > $cardNum) {
+                continue;
+            }
+            if ($type > $card->getColor()) {
+                continue;
+            }
+            $num = $cardNum;
+            $type = $card->getColor();
+            $string = $card->getOrigin();
+        }
+
+        return $string;
+    }
+
 
     /* 比較葫蘆 */
     public function compareFullHouse(array $cardSet, array $cardSet2)

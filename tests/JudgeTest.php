@@ -141,21 +141,37 @@ class JudgeTest extends TestCase
     }
 
     /* 鐵支 */
-    public function testCompareFourOfAKind()
+    /**
+     * @dataProvider  fourOfAKindProvider
+     * @param string $firstPlayerSet
+     * @param string $secondPlayerSet
+     * @param string $expected
+     */
+    public function testCompareFourOfAKind(string $firstPlayerSet, string $secondPlayerSet, string $expected)
     {
-        $firstPlayer = $this->player1->setCards('SA,HA,DA,CA,S6');
+        $firstPlayer = $this->player1->setCards($firstPlayerSet);
 
-        $secondPlayer = $this->player2->setCards('S2,H2,D2,C2,S8');
+        $secondPlayer = $this->player2->setCards($secondPlayerSet);
 
         $judge = new Judge($firstPlayer, $secondPlayer);
 
-        $this->assertEquals(
-            '',
-            $judge->compareFourOfAKind(
-                $judge->getFirstPlayer()->getCardSet()->getCards(),
-                $judge->getSecondPlayer()->getCardSet()->getCards()
-            ));
+        $this->assertEquals($expected, $judge->compareFourOfAKind(
+            $judge->getFirstPlayer()->getCardSet()->getCards(),
+            $judge->getSecondPlayer()->getCardSet()->getCards()
+        ));
     }
+
+    public function fourOfAKindProvider()
+    {
+        return [
+            ['S4,H4,D4,C4,S8', 'S4,H4,D4,C4,S8', ''],
+            ['S4,H4,D4,C4,S5', 'S4,H4,D4,C4,S8', 'S8'],
+            ['S2,H2,D2,C2,S5', 'S4,H4,D4,C4,S8', 'S2'],
+            ['SA,HA,DA,CA,S5', 'S4,H4,D4,C4,S8', 'SA'],
+            ['S4,H4,D4,C4,S5', 'SA,HA,DA,CA,S8', 'SA'],
+        ];
+    }
+
 
     /* 葫蘆 */
     public function testCompareFullHouse()
