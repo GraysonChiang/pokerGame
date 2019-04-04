@@ -37,17 +37,47 @@ class Judge
     public function judge()
     {
         if ($this->getPlayer1Weight() > $this->getPlayer2Weight()) {
-            return $this->getFistPlayer()->getName() . ' win';
+            return $this->getFistPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getFistPlayer(), $this->getSecondPlayer());
         }
 
-        return '';
+        if ($this->getPlayer2Weight() > $this->getPlayer2Weight()) {
+            return $this->getSecondPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getSecondPlayer(), $this->getFistPlayer());
+        }
+
+        if ($this->getPlayer1Weight() == $this->getPlayer2Weight()) {
+            return 'draw';
+        }
+
+        return 'no win';
     }
 
     public function getKeyCard(Player $winner, Player $loser)
     {
-        $allColor = $winner->getCardSet()->getMaximumCard();
+//        $winnerCard = $winner->getCardSet()->getCards();
+//        $this->compareCardSet($winner->getCardSet()->getCards(), $loser->getCardSet()->getCards());
+    }
 
-        var_dump($allColor);
+    /**
+     * @param Card[] $cardSet
+     * @param Card[] $cardSet2
+     * @return string
+     */
+    public function compareCardSet(array $cardSet, array $cardSet2)
+    {
+        foreach ([0, 1, 2, 3, 4] as $k) {
+            $cardNum = $cardSet[$k]->getNumber() == 2 ? '15' : $cardSet[$k]->getNumber();
+            $card2Num = $cardSet2[$k]->getNumber() == 2 ? '15' : $cardSet2[$k]->getNumber();
+
+            if ($cardNum > $card2Num) {
+                return $cardSet[$k]->getOrigin();
+            }
+
+            if ($cardSet[$k]->getColor() > $cardSet2[$k]->getColor()) {
+                return $cardSet[$k]->getOrigin();
+            }
+        }
+
+        return '';
     }
 
     public function getPlayer1Weight()
@@ -58,13 +88,6 @@ class Judge
     public function getPlayer2Weight()
     {
         return $this->getWeight($this->secondPlayer->getCardSet()->getResult());
-    }
-
-    public function getStraightFlushKey(Player $winner)
-    {
-        $cards = $winner->getCardSet()->getCards();
-
-        return '';
     }
 
     public function getWeight($weight)

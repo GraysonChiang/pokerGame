@@ -18,6 +18,8 @@ class Player
         $cardParser = new CardParser($cards);
 
         $this->cardsSet = new CardSet($cardParser->getResult());
+
+        return $this;
     }
 
     public function getCardSet(): CardSet
