@@ -64,6 +64,9 @@ class JudgeTest extends TestCase
             ['C2,CA,CJ,C4,C5', 'C2,CA,C10,C4,C3', 'CJ'],
             ['S2,HA,CA,C9,C5', 'S2,HA,CA,C6,C5', 'C9'],
             ['S8,C7,C5,D4,D3', 'S8,C7,C3,D4,D3', 'C5'],
+            ['S8,C8,H8', 'S7,C7,H7', 'S8'],
+            ['S8,H8,D8', 'S8,H8,C8', 'D8'],
+            ['S5,H5,D5,C3,S3', 'S5,H5,C5,C3,S3', 'D5']
         ];
     }
 
@@ -140,8 +143,9 @@ class JudgeTest extends TestCase
             ));
     }
 
-    /* 鐵支 */
     /**
+     * 比較鐵支
+     *
      * @dataProvider  fourOfAKindProvider
      * @param string $firstPlayerSet
      * @param string $secondPlayerSet
@@ -172,11 +176,38 @@ class JudgeTest extends TestCase
         ];
     }
 
-
-    /* 葫蘆 */
-    public function testCompareFullHouse()
+    /**
+     * 比較葫蘆
+     *
+     * @dataProvider  fullHouseProvider
+     * @param string $cardSet1
+     * @param string $cardSet2
+     * @param string $expected
+     */
+    public function testCompareFullHouse(string $cardSet1, string $cardSet2, string $expected)
     {
-        $this->assertTrue(true);
+        $player1 = $this->player1->setCards($cardSet1);
+
+        $player2 = $this->player2->setCards($cardSet2);
+
+        $judge = new Judge($player1, $player2);
+
+        $this->assertEquals($expected, $judge->compareFullHouse(
+            $judge->getFirstPlayer()->getCardSet()->getCards(),
+            $judge->getSecondPlayer()->getCardSet()->getCards()
+        ));
+    }
+
+    public function fullHouseProvider()
+    {
+        return [
+//            ['S10,H10,D10,C8,S8', 'S4,H4,D4,C8,S8', 'S10'], //平手
+//            ['S5,H5,D5,CA,SA', 'S2,H2,D2,CK,SK', 'S2'],
+//            ['S5,H5,C5,CA,SA', 'S5,H5,D5,CK,SK', 'D5'],
+//            ['S2,H2,D2,C2,S5', 'S4,H4,D4,C4,S8', 'S2'],
+//            ['SA,HA,DA,CA,S5', 'S4,H4,D4,C4,S8', 'SA'],
+//            ['S4,H4,D4,C4,S5', 'SA,HA,DA,CA,S8', 'SA'],
+        ];
     }
 
     /* 同花 */
@@ -185,10 +216,37 @@ class JudgeTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /* 三條 */
-    public function testCompareThreeOfKind()
+    /**
+     * 三條
+     * @dataProvider  threeOfKindProvider
+     * @param string $cardSet1
+     * @param string $cardSet2
+     * @param string $expected
+     */
+    public function testCompareThreeOfKind(string $cardSet1, string $cardSet2, string $expected)
     {
-        $this->assertTrue(true);
+        $player1 = $this->player1->setCards($cardSet1);
+
+        $player2 = $this->player2->setCards($cardSet2);
+
+        $judge = new Judge($player1, $player2);
+
+        $this->assertEquals($expected, $judge->compareThreeOfKind(
+            $judge->getFirstPlayer()->getCardSet()->getCards(),
+            $judge->getSecondPlayer()->getCardSet()->getCards()
+        ));
+    }
+
+    public function threeOfKindProvider()
+    {
+        return [
+//            ['S10,H10,D10,C3,S8', 'S4,H4,D4,C3,S8', 'S10'], //平手
+//            ['S5,H5,D5,CA,S3', 'S2,H2,D2,CK,S8', 'S2'],
+            ['S5,H5,D5,CK,SJ', 'S5,H5,C5,CK,SJ', 'D5'],
+//            ['S2,H2,D2,C2,S5', 'S4,H4,D4,C4,S8', 'S2'],
+//            ['SA,HA,DA,CA,S5', 'S4,H4,D4,C4,S8', 'SA'],
+//            ['S4,H4,D4,C4,S5', 'SA,HA,DA,CA,S8', 'SA'],
+        ];
     }
 
     /* 兩對 */
@@ -201,5 +259,25 @@ class JudgeTest extends TestCase
     public function testCompareOnePair()
     {
         $this->assertTrue(true);
+    }
+
+
+    public function testGetSpecificCards()
+    {
+        $player1 = $this->player1->setCards('SA,HA,DA,S4,S5');
+
+        $player2 = $this->player2->setCards('S10,H10,D10,C10,S5');
+
+        $judge = new Judge($player1, $player2);
+
+        $this->assertCount(
+            3,
+            $judge->getSpecificCards($judge->getFirstPlayer()->getCardSet()->getCards(), 14)
+        );
+
+        $this->assertCount(
+            4,
+            $judge->getSpecificCards($judge->getSecondPlayer()->getCardSet()->getCards(), 10)
+        );
     }
 }

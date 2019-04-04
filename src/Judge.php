@@ -169,11 +169,11 @@ class Judge
         return $string;
     }
 
-
     /* 比較葫蘆 */
     public function compareFullHouse(array $cardSet, array $cardSet2)
     {
 
+        return '';
     }
 
     /* 比較同花 */
@@ -185,7 +185,34 @@ class Judge
     /* 比較三條 */
     public function compareThreeOfKind(array $cardSet, array $cardSet2)
     {
+        $setGroup = array_flip($this->getCardSummary($cardSet));
 
+        $setGroup2 = array_flip($this->getCardSummary($cardSet2));
+
+        $winnerSet = $setGroup[3] > $setGroup2[3] ? $cardSet : $cardSet2;
+
+        $winnerNum = $setGroup[3] > $setGroup2[3] ? $setGroup[3] : $setGroup2[3];
+
+        $winnerSet = $this->getSpecificCards($winnerSet, $winnerNum);
+
+        if ($setGroup[3] == $setGroup2[3]) {
+
+
+        }
+
+        return $this->extractMaximumCard($winnerSet);
+    }
+
+    /**
+     * @param array $cards
+     * @param int $specificNum
+     * @return array
+     */
+    public function getSpecificCards(array $cards, int $specificNum): array
+    {
+        return array_filter($cards, function (Card $card) use ($specificNum) {
+            return $card->getNumber() == $specificNum;
+        });
     }
 
     /* 比較兩對 */
