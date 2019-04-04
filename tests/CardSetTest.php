@@ -74,9 +74,9 @@ class CardSetTest extends TestCase
             ['SA,HA,DA,CA,H6', 'SA'],
             ['S5,HA,DA,CA,H6', 'S5'],
             ['S5,H5,D5,C6,H6', 'S5'],
-            ['S1,S2,D3,C4,H5', 'S2'],
-            ['S1,H1,D3,C4,H5', 'S1'],
-            ['S1,H6,D3,C4,H5', 'S1'],
+            ['SA,S2,D3,C4,H5', 'S2'],
+            ['SA,H1,D3,C4,H5', 'SA'],
+            ['SA,H6,D3,C4,H5', 'SA'],
         ];
     }
 
@@ -99,25 +99,46 @@ class CardSetTest extends TestCase
     {
         return [
             ['C10,CJ,CQ,CK,CA', 'straight_flush'],
-            ['C1,C2,C3,C4,H5', 'straight'],
+            ['CA,C2,C3,C4,H5', 'straight'],
             ['CA,HA,C3,H3,H6', 'two_pair'],
             ['CA,HA,C4,H3,H6', 'one_pair'],
             ['SA,HA,DA,CA,H6', 'four_of_a_kind'],
             ['S5,HA,DA,CA,H6', 'three_of_Kind'],
             ['S5,H5,D5,C6,H6', 'full_house'],
-            ['S1,S2,D3,C4,H5', 'straight'],
-            ['S1,H1,D3,C4,H5', 'one_pair'],
-            ['S1,H6,D3,C4,H5', 'high_card'],
+            ['SA,S2,D3,C4,H5', 'straight'],
+            ['SA,HA,D3,C4,H5', 'one_pair'],
+            ['SA,H6,D3,C4,H5', 'high_card'],
         ];
     }
 
-    public function testIsStraight()
+    public function straightProvider()
     {
-        $cards = 'C10,CJ,CQ,CK,CA';
+        return [
+            ['C2,CJ,CQ,CK,CA'],
+            ['C9,C10,C11,C12,CK'],
+            ['C10,CJ,CQ,CK,CA'],
+            ['CJ,CQ,CK,CA,C2'],
+            ['CA,C2,C3,C4,H5'],
+            ['C3,C4,H5,H6,H7'],
+        ];
+    }
 
-        $cardSet = $this->getCardSet($cards);
+    /**
+     * @dataProvider straightProvider
+     * @param $string
+     */
+    public function testIsStraight($string)
+    {
+        $cardSet = $this->getCardSet($string);
 
         $this->assertTrue($cardSet->isStraight());
+    }
+
+    public function testIsNotStraight()
+    {
+        $cardSet = $this->getCardSet('CQ,CK,HA,H2,H3');
+
+        $this->assertFalse($cardSet->isStraight());
     }
 
     public function testIsFlush()

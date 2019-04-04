@@ -29,25 +29,27 @@ class CardSet
             return false;
         }
 
-        if (max($numbers) != 14) {
+        if (max($numbers) < 14) {
             return max($numbers) - min($numbers) == 4;
         }
 
-        /* 因為 A 用 14 取代 */
         sort($numbers);
-        array_pop($numbers);
 
-        if (max($numbers) + 1 != 14 && min($numbers) - 1 != 14) {
-            return false;
+        if (in_array('15', $numbers)) {
+            array_pop($numbers);
+        }
+
+        if (in_array('14', $numbers)) {
+            array_pop($numbers);
         }
 
         /*
-         * J Q K A 2 : 扣除掉 A 後，剩下加總為 38
-         * 10 J Q K A : 扣除掉 A 後，剩下加總為 46
-         * A 2 3 4 5 : 扣除掉 A 後，剩下加總為 14
+         * J Q K : 扣除掉 A 2 後，剩下加總為 36
+         * 10 J Q K  : 扣除掉 A 後，剩下加總為 46
+         * 3 4 5 : 扣除掉 A 後，剩下加總為 12
          *
          * */
-        if (in_array(array_sum($numbers), [38, 46, 14])) {
+        if (in_array(array_sum($numbers), [12, 36, 46])) {
             return true;
         }
 
@@ -203,7 +205,7 @@ class CardSet
         $string = '';
 
         foreach ($cards as $card) {
-            $cardNum = $card->getNumber() == 2 ? '15' : $card->getNumber();
+            $cardNum = $card->getNumber();
 
             if ($num > $cardNum) {
                 continue;
@@ -238,14 +240,11 @@ class CardSet
     public function sortCards(array $cards)
     {
         usort($cards, function (Card $card, Card $card2) {
-            $carNum = $card->getNumber() == 2 ? 15 : $card->getNumber();
-            $car2Num = $card2->getNumber() == 2 ? 15 : $card2->getNumber();
-
-            if ($carNum == $car2Num) {
+            if ($card->getNumber() == $card2->getNumber()) {
                 return $card->getColor() < $card2->getColor() ? 1 : -1;
             }
 
-            return $carNum < $car2Num ? 1 : -1;
+            return $card->getNumber() < $card2->getNumber() ? 1 : -1;
         });
 
         return $cards;

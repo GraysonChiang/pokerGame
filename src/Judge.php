@@ -20,7 +20,7 @@ class Judge
     /**
      * @return Player
      */
-    public function getFistPlayer(): Player
+    public function getFirstPlayer(): Player
     {
         return $this->fistPlayer;
     }
@@ -37,11 +37,11 @@ class Judge
     public function judge()
     {
         if ($this->getPlayer1Weight() > $this->getPlayer2Weight()) {
-            return $this->getFistPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getFistPlayer(), $this->getSecondPlayer());
+            return $this->getFirstPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getFirstPlayer(), $this->getSecondPlayer());
         }
 
         if ($this->getPlayer2Weight() > $this->getPlayer2Weight()) {
-            return $this->getSecondPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getSecondPlayer(), $this->getFistPlayer());
+            return $this->getSecondPlayer()->getName() . ' win card:' . $this->getKeyCard($this->getSecondPlayer(), $this->getFirstPlayer());
         }
 
         if ($this->getPlayer1Weight() == $this->getPlayer2Weight()) {
@@ -57,7 +57,19 @@ class Judge
 //        $this->compareCardSet($winner->getCardSet()->getCards(), $loser->getCardSet()->getCards());
     }
 
+    public function getPlayer1Weight()
+    {
+        return $this->getWeight($this->fistPlayer->getCardSet()->getResult());
+    }
+
+    public function getPlayer2Weight()
+    {
+        return $this->getWeight($this->secondPlayer->getCardSet()->getResult());
+    }
+
     /**
+     * 比較單張
+     *
      * @param Card[] $cardSet
      * @param Card[] $cardSet2
      * @return string
@@ -65,8 +77,8 @@ class Judge
     public function compareCardSet(array $cardSet, array $cardSet2)
     {
         foreach ([0, 1, 2, 3, 4] as $k) {
-            $cardNum = $cardSet[$k]->getNumber() == 2 ? '15' : $cardSet[$k]->getNumber();
-            $card2Num = $cardSet2[$k]->getNumber() == 2 ? '15' : $cardSet2[$k]->getNumber();
+            $cardNum = $cardSet[$k]->getNumber() ;
+            $card2Num = $cardSet2[$k]->getNumber();
 
             if ($cardNum > $card2Num) {
                 return $cardSet[$k]->getOrigin();
@@ -80,14 +92,60 @@ class Judge
         return '';
     }
 
-    public function getPlayer1Weight()
+    /* 比較順子 */
+    public function compareStraight(array $cardSet, array $cardSet2)
     {
-        return $this->getWeight($this->fistPlayer->getCardSet()->getResult());
+        return $this->compareCardSet($cardSet, $cardSet2);
     }
 
-    public function getPlayer2Weight()
+    /* 比較同花順 */
+    public function compareStraightFlush(array $cardSet, array $cardSet2)
     {
-        return $this->getWeight($this->secondPlayer->getCardSet()->getResult());
+        return $this->compareCardSet($cardSet, $cardSet2);
+    }
+
+    /* 比較鐵支 */
+    public function compareFourOfAKind(array $cardSet, array $cardSet2)
+    {
+        $aa = array_map(function (Card $card) {
+            return $card->getNumber();
+        }, $cardSet);
+
+        $bb = array_map(function (Card $card) {
+            return $card->getNumber();
+        }, $cardSet2);
+
+        return '';
+    }
+
+    /* 比較葫蘆 */
+    public function compareFullHouse(array $cardSet, array $cardSet2)
+    {
+
+    }
+
+    /* 比較同花 */
+    public function compareFlush(array $cardSet, array $cardSet2)
+    {
+
+    }
+
+    /* 比較三條 */
+    public function compareThreeOfKind(array $cardSet, array $cardSet2)
+    {
+
+    }
+
+    /* 比較兩對 */
+    public function compareTwoPair(array $cardSet, array $cardSet2)
+    {
+
+    }
+
+    /* 比較一對 */
+    public function compareOnePair(array $cardSet, array $cardSet2)
+    {
+
     }
 
     public function getWeight($weight)
@@ -106,5 +164,4 @@ class Judge
 
         return $result[$weight] ?? '';
     }
-
 }

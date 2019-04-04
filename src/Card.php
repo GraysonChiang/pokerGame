@@ -4,7 +4,6 @@ namespace App;
 
 class Card
 {
-
     /**
      * @var string
      */
@@ -35,6 +34,7 @@ class Card
     private function parserNumber(string $string)
     {
         $map = [
+            '2' => '15',
             'A' => '14',
             'K' => '13',
             'Q' => '12',
